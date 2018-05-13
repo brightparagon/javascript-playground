@@ -1,10 +1,78 @@
 const playSound = require('./drumkit').playSound;
 const removeTransition = require('./drumkit').removeTransition;
 
-test('playSound should be a function', () => {
+test('playSound should be a function.', () => {
   expect(typeof playSound).toBe('function');
 });
 
-test('removeTransition should be a function', () => {
+test('removeTransition should be a function.', () => {
   expect(typeof removeTransition).toBe('function');
+});
+
+test('After playSound being called a div with key class should have a playing class.', () => {
+  // create inner html to test ui
+  document.body.innerHTML = `
+    <div class="container">
+      <div class="keys">
+        <div data-key='65' class="key">
+          <kbd>A</kbd>
+          <span class="sound">clap</span>
+        </div>
+        <div data-key='83' class="key">
+          <kbd>S</kbd>
+          <span class="sound">hithat</span>
+        </div>
+        <div data-key='68' class="key">
+          <kbd>D</kbd>
+          <span class="sound">kick</span>
+        </div>
+        <div data-key='70' class="key">
+          <kbd>F</kbd>
+          <span class="sound">openhat</span>
+        </div>
+        <div data-key='71' class="key">
+          <kbd>G</kbd>
+          <span class="sound">boom</span>
+        </div>
+        <div data-key='72' class="key">
+          <kbd>H</kbd>
+          <span class="sound">ride</span>
+        </div>
+        <div data-key='74' class="key">
+          <kbd>J</kbd>
+          <span class="sound">snare</span>
+        </div>
+        <div data-key='75' class="key">
+          <kbd>K</kbd>
+          <span class="sound">tom</span>
+        </div>
+        <div data-key='76' class="key">
+          <kbd>L</kbd>
+          <span class="sound">tink</span>
+        </div>
+      </div>
+    </div>
+
+    <audio data-key='65' src="sounds/clap.wav"></audio>
+    <audio data-key='83' src="sounds/hihat.wav"></audio>
+    <audio data-key='68' src="sounds/kick.wav"></audio>
+    <audio data-key='70' src="sounds/openhat.wav"></audio>
+    <audio data-key='71' src="sounds/boom.wav"></audio>
+    <audio data-key='72' src="sounds/ride.wav"></audio>
+    <audio data-key='74' src="sounds/snare.wav"></audio>
+    <audio data-key='75' src="sounds/tom.wav"></audio>
+    <audio data-key='76' src="sounds/tink.wav"></audio> 
+  `;
+
+  // mock event
+  const event = {
+    keyCode: 65
+  };
+
+  // there is no support to media operations(play, load..) in jsdom
+  window.HTMLMediaElement.prototype.play = () => { /* do nothing */ };
+  playSound(event);
+
+  const key = document.querySelector(`.key[data-key="${event.keyCode}"]`);
+  expect(key.classList.contains('playing')).toBeTruthy();
 });
