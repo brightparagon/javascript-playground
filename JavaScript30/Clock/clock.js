@@ -52,3 +52,9 @@ function createCounter() {
 // create a counter and call tick every second
 const counter = createCounter();
 setInterval(() => {tick(counter)}, 1000);
+
+module.exports = {
+  getHand: getHand,
+  rotateHand: rotateHand,
+  createCounter: createCounter
+};
